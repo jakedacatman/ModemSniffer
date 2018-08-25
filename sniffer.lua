@@ -79,6 +79,7 @@ end
 local function writeTime()
     term.setTextColor(colors.purple)
     write(textutils.formatTime(os.time("utc"), true).." ")
+    term.setTextColor(colors.white)
 end
 
 print("sniffer initialized!")
