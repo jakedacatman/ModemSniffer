@@ -38,7 +38,7 @@ end
  
 print("Running version "..version)
 
-local monitor = peripheral.wrap("monitor_834")
+local monitor = peripheral.find("monitor")
 monitor.clear()
 monitor.setTextScale(0.5)
 monitor.setCursorPos(1,1)
