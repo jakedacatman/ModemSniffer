@@ -69,9 +69,6 @@ for i,v in pairs({peripheral.find("modem", function(name, object) return object.
 end
 print("finished with channel "..channel-1)
  
---local modem = peripheral.find("modem", function(name, object) return object.isWireless() end)
-local modem = peripheral.wrap("front")
- 
 local function isBlacklisted(channel)
     for i = 1, #blacklist do
         if channel == blacklist[i] then return true end
