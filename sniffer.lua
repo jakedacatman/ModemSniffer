@@ -1,7 +1,7 @@
 --2
 --made blacklist a file
  
-local version = 1
+local version = 2
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
