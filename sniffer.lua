@@ -49,7 +49,7 @@ if not fs.exists("blacklist.lua") then
 end
 
 local blacklistFile = fs.open("blacklist.lua", "r")
-local blacklist = textutils.serialize(blacklistFile.readAll())
+local blacklist = textutils.unserialize(blacklistFile.readAll())
 blacklistFile.close()
  
 local iter = 0
