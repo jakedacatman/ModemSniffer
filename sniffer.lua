@@ -1,7 +1,7 @@
---2
---made blacklist a file
+--3
+--added timestamps
  
-local version = 2
+local version = 3
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
@@ -75,12 +75,19 @@ local function isBlacklisted(channel)
     end
     return false
 end
+
+local function writeTime()
+    term.setTextColor(colors.purple)
+    write(textutils.formatTime(os.time("utc"), true).." ")
+end
+
 print("sniffer initialized!")
 while true do
     local event, side, senderChannel, replyChannel, msg, distance = os.pullEvent("modem_message")
     if distance == nil then distance = "unknown" end
     if not isBlacklisted(replyChannel) then
     --print(event, side , senderChannel, replyChannel, msg, distance)
+        writeTime()
         print(senderChannel..":"..replyChannel..":"..distance..": \n"..textutils.serialize(msg))
         sleep(1)
     end
