@@ -1,5 +1,5 @@
---1
---first commit
+--2
+--made blacklist a file
  
 local version = 1
  
@@ -43,8 +43,14 @@ monitor.clear()
 monitor.setTextScale(0.5)
 monitor.setCursorPos(1,1)
 term.redirect(monitor)
- 
-local blacklist = { } --enter the number of a channel you wish to blacklist from sniffing
+
+if not fs.exists("blacklist.lua") then
+    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/blacklist.lua blacklist.lua")
+end
+
+local blacklistFile = fs.open("blacklist.lua", "r")
+local blacklist = textutils.serialize(blacklistFile.readAll())
+blacklistFile.close()
  
 local iter = 0
 local channel = 1
