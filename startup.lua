@@ -1,5 +1,5 @@
-if not fs.exists("/gps.lua") then
-    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/gps.lua gps.lua")
+if not fs.exists("locate.lua") then
+    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/locate.lua locate.lua")
 end
 
 if not fs.exists("host.lua") then
