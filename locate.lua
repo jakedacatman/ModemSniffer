@@ -108,7 +108,7 @@ function locate( _nTimeout, _bDebug )
             if sSide == sModemSide and sChannel == 6969 and sReplyChannel == 6969 and nDistance then
                 -- Received the correct message from the correct modem: use it to determine position
                 if type(tMessage) == "table" and #tMessage == 3 and tonumber(tMessage[1]) and tonumber(tMessage[2]) and tonumber(tMessage[3]) then
-                    local tFix = { vPosition = vector.new( tMessage[1], tMessage[2], tMessage[3] ), nDistance = nDistance }
+                    local tFix = { vPosition = vector.new( tMessage[1][1], tMessage[1][2], tMessage[1][3] ), nDistance = tMessage[1][2] }
                     if _bDebug then
                         print( tFix.nDistance.." metres from "..tostring( tFix.vPosition ) )
                     end
@@ -116,11 +116,11 @@ function locate( _nTimeout, _bDebug )
                         pos1, pos2 = tFix.vPosition, nil
                     else
                         table.insert( tFixes, tFix )
-                        if #tFixes >= 3 then
+                        if #tFixes > 3 then
                             if not pos1 then
-                                pos1, pos2 = trilaterate( tFixes[1], tFixes[2], tFixes[#tFixes] )
+                                pos1, pos2 = trilaterate( tFixes[1], tFixes[2], tFixes[3] )
                             else
-                                pos1, pos2 = narrow( pos1, pos2, tFixes[#tFixes] )
+                                pos1, pos2 = narrow( pos1, pos2, tFixes[4] )
                             end
                         end
                     end
