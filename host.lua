@@ -5,10 +5,10 @@ local function printUsage()
     print( "host locate" )
 end
 
-if not fs.exists("/gps.lua") then
-	shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/gps.lua gps.lua")
+if not fs.exists("locate.lua") then
+	shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/gps.lua locate.lua")
 end
-os.loadAPI("/gps.lua")
+os.loadAPI("locate.lua")
  
 local sendingChannel = 6969
  
@@ -22,7 +22,7 @@ end
 if sCommand == "locate" then
     -- "gps locate"
     -- Just locate this computer (this will print the results)
-    gps.locate( 2, true )
+    locate.locate( 2, true )
    
 elseif sCommand == "host" then
     -- "gps host"
@@ -60,7 +60,7 @@ elseif sCommand == "host" then
         print( "Position is "..x..","..y..","..z )
     else
         -- Position is to be determined using locate        
-        x,y,z = gps.locate( 2, true )
+        x,y,z = locate.locate( 2, true )
         if x == nil then
             print( "Run \"host host <x> <y> <z>\" to set position manually" )
             return
