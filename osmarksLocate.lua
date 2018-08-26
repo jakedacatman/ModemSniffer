@@ -51,7 +51,7 @@ local function narrow( p1, p2, fix )
     end
 end
  
-local function locate(debug)
+local function locate(timeout, debug)
     local log = fs.open("log.txt", "a")
  
     while true do
