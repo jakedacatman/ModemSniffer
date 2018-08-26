@@ -62,7 +62,7 @@ local function locate(timeout, debug)
                 message.position = vector.new(message[1], message[2], message[3])
                 message.distance = message[4]
  
-                table.insert(fixes, message) end
+                table.insert(fixes, message)
             end
         until #fixes == 4
  
