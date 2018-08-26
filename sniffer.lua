@@ -1,7 +1,7 @@
---4
---cut startup peripheral calls from about 160 to about 60 if modems are already opened
+--5
+--reverted everything to version 3 since i'm an idiot lmao
  
-local version = 4
+local version = 5
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
@@ -54,9 +54,6 @@ end
 local blacklistFile = fs.open("blacklist.lua", "r")
 local blacklist = textutils.unserialize(blacklistFile.readAll())
 blacklistFile.close()
- 
-local iter = 0
-local channel = 1
 
 local function isBlacklisted(channel)
     for i = 1, #blacklist do
@@ -65,35 +62,22 @@ local function isBlacklisted(channel)
     return false
 end
 
---local modems = {peripheral.find("modem", function(name, object) return object.isWireless() end)}
-local modems = {}
+local modems = {peripheral.find("modem", function(name, object) return object.isWireless() end)}
 
-if not fs.exists("cache.lua") then --delete this file to reopen everything
-	local cache = fs.open("cache.lua", "w")
-	cache.writeLine("{")
-	cache.flush()
-	peripheral.find("modem", function(name, object) if object.isWireless() then cache.writeLine("\""..name.."\",") cache.flush() end return object.isWireless() end)
-	cache.writeLine("}")
-	cache.close()
-end
-local cache = fs.open("cache.lua", "r")
-local names = textutils.unserialize(cache.readAll())
-table.sort(names)
-for i = 1, #names do
-	table.insert(modems, peripheral.wrap(names[i]))
-end
+local iter = 0
+local channel = 1
 
 for k = 1, #modems do
     for i = 1,128 do
-		local v = modems[k]
+	local v = modems[k]
         if i+iter > 65535 then break end
 		if not v.isOpen(i+iter) and not isBlacklisted(i+iter) then
-        	v.open(i+iter)
-        	channel = channel + 1
+        		v.open(i+iter)
+        		channel = channel + 1
 		end
-    end
-    iter = iter+128
-    sleep()
+    	end
+    	iter = iter+128
+    	sleep()
 end
 print("finished with channel "..channel-1)
 
