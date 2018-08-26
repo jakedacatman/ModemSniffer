@@ -51,7 +51,7 @@ local function narrow( p1, p2, fix )
     end
 end
  
-local function locate(timeout, debug)
+function locate(timeout, debug)
     while true do
         local fixes = {}
  
