@@ -1,7 +1,7 @@
 --4
 --cut startup peripheral calls from about 160 to about 60 if modems are already opened
  
-local version = 3
+local version = 4
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
