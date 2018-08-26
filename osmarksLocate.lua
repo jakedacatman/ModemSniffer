@@ -70,7 +70,7 @@ local function locate(timeout, debug)
         local p1, p2 = trilaterate(fixes[1], fixes[2], fixes[3])
         if p1 and p2 then
             local pos = narrow(p1, p2, fixes[4])
-            if debug then print(textutils.serialize(pos))
+            if debug then print(textutils.serialize(pos)) end
             return pos
         else 
             return nil 
