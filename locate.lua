@@ -5,7 +5,6 @@ local function trilaterate( A, B, C )
     local a2c = C.vPosition - A.vPosition
        
     if math.abs( a2b:normalize():dot( a2c:normalize() ) ) > 0.999 then
-        print("oof")
         return nil
     end
    
