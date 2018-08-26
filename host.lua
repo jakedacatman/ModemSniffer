@@ -4,7 +4,10 @@ local function printUsage()
     print( "host host <x> <y> <z>" )
     print( "host locate" )
 end
- 
+
+if not fs.exists("/gps.lua") then
+	shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/gps.lua gps.lua")
+end
 os.loadAPI("/gps.lua")
  
 local sendingChannel = 6969
