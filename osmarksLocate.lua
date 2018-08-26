@@ -52,22 +52,17 @@ local function narrow( p1, p2, fix )
 end
  
 local function locate(timeout, debug)
-    local log = fs.open("log.txt", "a")
- 
     while true do
         local fixes = {}
  
         repeat
             local _, _, chan, reply_chan, message = os.pullEvent "modem_message"
-            if chan == t.message_channel and type(message) == "table" and message.position and message.ID and message.distance then
-                local already_has_fix = false
-                for _, f in pairs(fixes) do
-                    if f.ID == message.ID then already_has_fix = true end
-                end
+            if chan == 6969 and type(message) == "table" and tonumber(message[1]) and tonumber(message[2]) and tonumber(message[3]) and tonumber(message[4]) then                
  
-                message.position = vector.new(table.unpack(message.position))
+                message.position = vector.new(message[1], message[2], message[3])
+                message.distance = message[4]
  
-                if not already_has_fix then table.insert(fixes, message) end
+                table.insert(fixes, message) end
             end
         until #fixes == 4
  
@@ -77,6 +72,8 @@ local function locate(timeout, debug)
             local pos = narrow(p1, p2, fixes[4])
             if debug then print(textutils.serialize(pos))
             return pos
-        else return nil end
+        else 
+            return nil 
+        end
     end
 end
