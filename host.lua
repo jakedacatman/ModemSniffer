@@ -1,11 +1,11 @@
 local function printUsage()
     print( "Usages:" )
-    print( "gps host" )
-    print( "gps host <x> <y> <z>" )
-    print( "gps locate" )
+    print( "host host" )
+    print( "host host <x> <y> <z>" )
+    print( "host locate" )
 end
  
-os.loadAPI("gps.lua")
+os.loadAPI("/gps.lua")
  
 local sendingChannel = 6969
  
@@ -59,7 +59,7 @@ elseif sCommand == "host" then
         -- Position is to be determined using locate        
         x,y,z = gps.locate( 2, true )
         if x == nil then
-            print( "Run \"gps host <x> <y> <z>\" to set position manually" )
+            print( "Run \"host host <x> <y> <z>\" to set position manually" )
             return
         end
     end
