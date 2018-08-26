@@ -1,5 +1,5 @@
---3
---added timestamps
+--4
+--cut startup peripheral calls from about 160 to about 60 if modems are already opened
  
 local version = 3
  
@@ -19,7 +19,7 @@ if latest ~= nil then
                     fs.delete(shell.getRunningProgram())
                     shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua sniffer.lua")
                     print("Update complete!")
-                    print("If you wish to run the new version, then hold CTRL+R and run sniffer.lua.")
+                    print("If you wish to run the new version, then hold CTRL+T and run sniffer.lua.")
                 else
                     print("Not updating.")
                     break
@@ -39,10 +39,13 @@ end
 print("Running version "..version)
 
 local monitor = peripheral.find("monitor")
-monitor.clear()
-monitor.setTextScale(0.5)
-monitor.setCursorPos(1,1)
-term.redirect(monitor)
+if monitor then
+	monitor.clear()
+	monitor.setTextScale(0.5)
+	monitor.setCursorPos(1,1)
+	monitor.setTextColor(colors.white)
+	term.redirect(monitor)
+end
 
 if not fs.exists("blacklist.lua") then
     shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/blacklist.lua blacklist.lua")
@@ -55,20 +58,6 @@ blacklistFile.close()
 local iter = 0
 local channel = 1
 
-for i,v in pairs({peripheral.find("modem", function(name, object) return object.isWireless() end)}) do
-    for i = 1,128 do
-        if channel > 65535 then break end
-        v.open(i+iter)
-        for k, bl in pairs(blacklist) do
-            if i+iter == bl then v.close(i+iter) end
-        end
-        channel = channel+1
-    end
-    iter = iter+128
-    sleep()
-end
-print("finished with channel "..channel-1)
- 
 local function isBlacklisted(channel)
     for i = 1, #blacklist do
         if channel == blacklist[i] then return true end
@@ -76,10 +65,43 @@ local function isBlacklisted(channel)
     return false
 end
 
-local function writeTime()
+--local modems = {peripheral.find("modem", function(name, object) return object.isWireless() end)}
+local modems = {}
+
+if not fs.exists("cache.lua") then --delete this file to reopen everything
+	local cache = fs.open("cache.lua", "w")
+	cache.writeLine("{")
+	cache.flush()
+	peripheral.find("modem", function(name, object) if object.isWireless() then cache.writeLine("\""..name.."\",") cache.flush() end return object.isWireless() end)
+	cache.writeLine("}")
+	cache.close()
+end
+local cache = fs.open("cache.lua", "r")
+local names = textutils.unserialize(cache.readAll())
+table.sort(names)
+for i = 1, #names do
+	table.insert(modems, peripheral.wrap(names[i]))
+end
+
+for k = 1, #modems do
+    for i = 1,128 do
+		local v = modems[k]
+        if i+iter > 65535 then break end
+		if not v.isOpen(i+iter) and not isBlacklisted(i+iter) then
+        	v.open(i+iter)
+        	channel = channel + 1
+		end
+    end
+    iter = iter+128
+    sleep()
+end
+print("finished with channel "..channel-1)
+
+
+local function writeTime(color)
     term.setTextColor(colors.purple)
     write(textutils.formatTime(os.time("utc"), true).." ")
-    term.setTextColor(colors.white)
+	term.setTextColor(color)
 end
 
 print("sniffer initialized!")
@@ -87,9 +109,10 @@ while true do
     local event, side, senderChannel, replyChannel, msg, distance = os.pullEvent("modem_message")
     if distance == nil then distance = "unknown" end
     if not isBlacklisted(replyChannel) then
-    --print(event, side , senderChannel, replyChannel, msg, distance)
-        writeTime()
-        print(senderChannel..":"..replyChannel..":"..distance..": \n"..textutils.serialize(msg))
+        writeTime(colors.white)
+        print(senderChannel..":"..replyChannel..":"..distance..":")
+		term.setTextColor(colors.red)
+		print(textutils.serialize(msg))
         sleep(1)
     end
 end
