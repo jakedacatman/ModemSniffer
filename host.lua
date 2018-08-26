@@ -6,7 +6,7 @@ local function printUsage()
 end
 
 if not fs.exists("locate.lua") then
-	shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/gps.lua locate.lua")
+	shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/locate.lua locate.lua")
 end
 os.loadAPI("locate.lua")
  
@@ -83,7 +83,7 @@ elseif sCommand == "host" then
             local sSide, sChannel, sReplyChannel, sMessage, nDistance = p1, p2, p3, p4, p5
             if sSide == sModemSide and nDistance then
                 -- We received a ping message on the GPS channel, send a response
-                modem.transmit( sendingChannel, 6969, {vector.new(x, y, z), nDistance } )          
+                modem.transmit( sendingChannel, 6969, {x, y, z, nDistance } )          
                 -- Print the number of requests handled
                 nServed = nServed + 1
                 if nServed > 1 then
