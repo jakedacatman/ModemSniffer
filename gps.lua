@@ -95,7 +95,6 @@ function locate( _nTimeout, _bDebug )
     end
    
     -- Send a ping to listening GPS hosts
-    modem.transmit( CHANNEL_GPS, os.getComputerID(), "PING" )
        
     -- Wait for the responses
     local tFixes = {}
