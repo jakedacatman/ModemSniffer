@@ -108,7 +108,7 @@ function locate( _nTimeout, _bDebug )
             if sSide == sModemSide and sChannel == 6969 and sReplyChannel == 6969 and nDistance then
                 -- Received the correct message from the correct modem: use it to determine position
                 if type(tMessage) == "table" and #tMessage == 3 and tonumber(tMessage[1]) and tonumber(tMessage[2]) and tonumber(tMessage[3]) then
-                    local tFix = { vPosition = vector.new( tMessage[1][1], tMessage[1][2], tMessage[1][3] ), nDistance = tMessage[1][2] }
+                    local tFix = { vPosition = vector.new( tMessage[1], tMessage[2], tMessage[3] ), nDistance = tMessage[4] }
                     if _bDebug then
                         print( tFix.nDistance.." metres from "..tostring( tFix.vPosition ) )
                     end
