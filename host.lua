@@ -91,6 +91,7 @@ elseif sCommand == "host" then
                     term.setCursorPos(1,y-1)
                 end
                 print( nServed.." GPS requests served" )
+		sleep(1)
             end
         end
     end
