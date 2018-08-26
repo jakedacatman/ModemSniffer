@@ -71,7 +71,7 @@ for k = 1, #modems do
     for i = 1,128 do
 	local v = modems[k]
         if i+iter > 65535 then break end
-		if not v.isOpen(i+iter) and not isBlacklisted(i+iter) then
+		if not isBlacklisted(i+iter) then
         		v.open(i+iter)
         		channel = channel + 1
 		end
