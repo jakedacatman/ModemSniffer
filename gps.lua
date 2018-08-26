@@ -89,8 +89,8 @@ function locate( _nTimeout, _bDebug )
     -- Open a channel
     local modem = peripheral.wrap( sModemSide )
     local bCloseChannel = false
-    if not modem.isOpen( os.getComputerID() ) then
-        modem.open( os.getComputerID() )
+    if not modem.isOpen( 6969 ) then
+        modem.open( 6969 )
         bCloseChannel = true
     end
    
