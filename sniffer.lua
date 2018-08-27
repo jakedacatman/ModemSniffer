@@ -68,6 +68,8 @@ blacklistFile.close()
 local configFile = fs.open("sniffConfig.lua", "r")
 local config = textutils.unserialize(configFile.readAll())
 configFile.close()
+
+if type(config.wiredModem) ~= string then config.getDistance = false end
  
 local function isBlacklisted(channel)
     for i = 1, #blacklist do
