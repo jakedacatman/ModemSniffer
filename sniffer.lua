@@ -1,7 +1,7 @@
---5
---reverted everything to version 3 since i'm an idiot lmao
+--6
+--added location logging with rednet (requires a host setup like the one in the wiki tab)
  
-local version = 5
+local version = 6
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
@@ -37,66 +37,93 @@ else
 end
  
 print("Running version "..version)
-
+ 
 local monitor = peripheral.find("monitor")
 if monitor then
-	monitor.clear()
-	monitor.setTextScale(0.5)
-	monitor.setCursorPos(1,1)
-	monitor.setTextColor(colors.white)
-	term.redirect(monitor)
+    monitor.clear()
+    monitor.setTextScale(0.5)
+    monitor.setCursorPos(1,1)
+    monitor.setTextColor(colors.white)
+    term.redirect(monitor)
 end
-
+ 
 if not fs.exists("blacklist.lua") then
     shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/blacklist.lua blacklist.lua")
 end
-
+ 
+if not fs.exists("locate.lua") then
+    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/locate.lua locate.lua")
+end
+ 
+if not fs.exists("sniffConfig.lua") then
+    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffConfig.lua sniffConfig.lua")
+end
+ 
+os.loadAPI("locate.lua")
+ 
 local blacklistFile = fs.open("blacklist.lua", "r")
 local blacklist = textutils.unserialize(blacklistFile.readAll())
 blacklistFile.close()
-
+ 
+local configFile = fs.open("sniffConfig.lua", "r")
+local config = textutils.unserialize(configFile.readAll())
+configFile.close()
+ 
 local function isBlacklisted(channel)
     for i = 1, #blacklist do
         if channel == blacklist[i] then return true end
     end
     return false
 end
-
+ 
 local modems = {peripheral.find("modem", function(name, object) return object.isWireless() end)}
-
+ 
 local iter = 0
 local channel = 1
-
+ 
 for k = 1, #modems do
     for i = 1,128 do
-	local v = modems[k]
+    local v = modems[k]
         if i+iter > 65535 then break end
-		if not isBlacklisted(i+iter) then
-        		v.open(i+iter)
-        		channel = channel + 1
-		end
-    	end
-    	iter = iter+128
-    	sleep()
+        if not isBlacklisted(i+iter) then
+                v.open(i+iter)
+                channel = channel + 1
+        end
+        end
+        iter = iter+128
+        sleep()
 end
 print("finished with channel "..channel-1)
-
-
+ 
+ 
 local function writeTime(color)
     term.setTextColor(colors.purple)
     write(textutils.formatTime(os.time("utc"), true).." ")
-	term.setTextColor(color)
+    term.setTextColor(color)
 end
-
+ 
 print("sniffer initialized!")
 while true do
     local event, side, senderChannel, replyChannel, msg, distance = os.pullEvent("modem_message")
     if distance == nil then distance = "unknown" end
-    if not isBlacklisted(replyChannel) then
-        writeTime(colors.white)
-        print(senderChannel..":"..replyChannel..":"..distance..":")
-		term.setTextColor(colors.red)
-		print(textutils.serialize(msg))
-        sleep(1)
+    if senderChannel ~= 6969 then
+        if config.getDistance and senderChannel == 65533 or senderChannel == 65535 then
+            if not isBlacklisted(replyChannel) then
+                writeTime(colors.white)
+                local pos = locate.locate(2, false)
+                print(senderChannel..":"..replyChannel..":("..pos:tostring().."):")
+                term.setTextColor(colors.red)
+                print(textutils.serialize(msg))
+                sleep(1)
+            end
+        else
+            if not isBlacklisted(replyChannel) then
+                writeTime(colors.white)
+                print(senderChannel..":"..replyChannel..":"..distance..":")
+                term.setTextColor(colors.red)
+                print(textutils.serialize(msg))
+                sleep(1)
+            end
+        end
     end
 end
