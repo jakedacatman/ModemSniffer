@@ -1,7 +1,7 @@
---6
---added location logging with rednet (requires a host setup like the one in the wiki tab)
+--7
+--fixed an error that arose when the position was nil
  
-local version = 6
+local version = 7
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
@@ -105,13 +105,14 @@ end
 print("sniffer initialized!")
 while true do
     local event, side, senderChannel, replyChannel, msg, distance = os.pullEvent("modem_message")
-    if distance == nil then distance = "unknown" end
+    if not distance then distance = "unknown" end
     if senderChannel ~= 6969 then
         if config.getDistance and senderChannel == 65533 or senderChannel == 65535 then
             if not isBlacklisted(replyChannel) then
                 writeTime(colors.white)
                 local pos = locate.locate(2, false)
-                print(senderChannel..":"..replyChannel..":("..pos:tostring().."):")
+                if pos then print(senderChannel..":"..replyChannel..":("..pos:tostring().."):")
+                else print(senderChannel..":"..replyChannel..":"..distance..":") end
                 term.setTextColor(colors.red)
                 print(textutils.serialize(msg))
                 sleep(1)
