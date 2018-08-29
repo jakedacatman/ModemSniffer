@@ -1,5 +1,3 @@
---1
---number one
 local function trilaterate( A, B, C )
     local a2b = B.position - A.position
     local a2c = C.position - A.position
