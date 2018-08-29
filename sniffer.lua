@@ -108,7 +108,7 @@ print("sniffer initialized!")
 while true do
     local event, side, senderChannel, replyChannel, msg, distance = os.pullEvent("modem_message")
     if not distance then distance = "unknown" end
-    if senderChannel ~= 6969 and side ~= config.wiredModem then
+    if side ~= config.wiredModem then
         if config.getDistance and senderChannel == 65533 or senderChannel == 65535 then
             if not isBlacklisted(replyChannel) then
                 writeTime(colors.white)
