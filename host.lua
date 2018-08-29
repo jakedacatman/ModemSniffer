@@ -45,6 +45,7 @@ local function printUsage()
     print( "host locate" )
 end
 
+if fs.exists("locate.lua") then fs.delete("locate.lua") end
 if not fs.exists("locate.lua") then
 	shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/locate.lua locate.lua")
 end
