@@ -37,7 +37,22 @@ else
 end
  
 print("Running version "..version)
+
+if not fs.exists("blacklist.lua") then
+    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/blacklist.lua blacklist.lua")
+end
  
+if fs.exists("locate.lua") then fs.delete("locate.lua") end
+if not fs.exists("locate.lua") then
+	shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/locate.lua locate.lua")
+end
+ 
+if not fs.exists("sniffConfig.lua") then
+    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffConfig.lua sniffConfig.lua")
+end
+ 
+os.loadAPI("locate.lua")
+
 local monitor = peripheral.find("monitor")
 if monitor then
     monitor.clear()
@@ -46,20 +61,7 @@ if monitor then
     monitor.setTextColor(colors.white)
     term.redirect(monitor)
 end
- 
-if not fs.exists("blacklist.lua") then
-    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/blacklist.lua blacklist.lua")
-end
- 
-if not fs.exists("locate.lua") then
-    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/locate.lua locate.lua")
-end
- 
-if not fs.exists("sniffConfig.lua") then
-    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffConfig.lua sniffConfig.lua")
-end
- 
-os.loadAPI("locate.lua")
+
  
 local blacklistFile = fs.open("blacklist.lua", "r")
 local blacklist = textutils.unserialize(blacklistFile.readAll())
