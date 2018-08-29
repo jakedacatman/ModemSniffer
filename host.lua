@@ -1,7 +1,7 @@
---2
---made wireless modem to sniffer wired to prevent spam
+--3
+--f to pay respects to wired modems
  
-local version = 2
+local version = 3
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/host.lua")
  
