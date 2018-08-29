@@ -1,7 +1,7 @@
---8
---made location wired
+--9
+--since v8 didn't work i rolled back to 7
  
-local version = 8
+local version = 9
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
