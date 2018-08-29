@@ -1,3 +1,4 @@
 {
   getDistance = false,
+  wiredModem = false,
 }

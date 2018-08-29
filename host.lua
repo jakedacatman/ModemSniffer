@@ -1,3 +1,43 @@
+--2
+--made wireless modem to sniffer wired to prevent spam
+ 
+local version = 2
+ 
+local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/host.lua")
+ 
+if latest ~= nil then
+    local latestVersion = tonumber(string.sub(latest.readLine(), 3))
+    if latestVersion > version then
+        print("Out of date (version "..latestVersion.." is out).")
+        print("Update notes: "..string.sub(latest.readLine(), 3))
+        print("Do you wish to update? (y/n)")
+        local timeout = os.startTimer(15)
+        while true do
+            local event = {os.pullEvent()}
+            if event[1] == "char" then
+                if event[2] == "y" then
+                    fs.delete(shell.getRunningProgram())
+                    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/host.lua host.lua")
+                    print("Update complete!")
+                    print("If you wish to run the new version, then hold CTRL+T and run sniffer.lua.")
+                else
+                    print("Not updating.")
+                    break
+                end
+            elseif event[1] == "timer" and event[2] == timeout then
+                print("Not updating.")
+                break
+            end
+        end
+    else
+        print("Up to date! (or Github hasn't pushed my update)")
+    end
+else
+    print("Failed to check for new version.")
+end
+ 
+print("Running version "..version)
+
 local function printUsage()
     print( "Usages:" )
     print( "host host" )
@@ -83,7 +123,8 @@ elseif sCommand == "host" then
             local sSide, sChannel, sReplyChannel, sMessage, nDistance = p1, p2, p3, p4, p5
             if sSide == sModemSide and nDistance then
                 -- We received a ping message on the GPS channel, send a response
-                modem.transmit( sendingChannel, 6969, {x, y, z, nDistance } )          
+		local wmodem = peripheral.wrap("bottom")
+                wmodem.transmit( sendingChannel, 6969, {x, y, z, nDistance } )          
                 -- Print the number of requests handled
                 nServed = nServed + 1
                 if nServed > 1 then

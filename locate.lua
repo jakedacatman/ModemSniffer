@@ -1,3 +1,14 @@
+
+if not fs.exists("sniffConfig.lua") then
+    shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffConfig.lua sniffConfig.lua")
+end
+
+local configFile = fs.open("sniffConfig.lua", "r")
+local config = textutils.unserialize(configFile.readAll())
+configFile.close()
+
+if type(config.wiredModem) ~= string then config.getDistance = false end
+
 local function trilaterate( A, B, C )
     local a2b = B.position - A.position
     local a2c = C.position - A.position
@@ -56,8 +67,8 @@ function locate(timeout, debug)
         local fixes = {}
  
         repeat
-            local _, _, chan, reply_chan, message = os.pullEvent "modem_message"
-            if chan == 6969 and type(message) == "table" and tonumber(message[1]) and tonumber(message[2]) and tonumber(message[3]) and tonumber(message[4]) then                
+            local _, side, chan, reply_chan, message = os.pullEvent "modem_message"
+            if chan == 6969 and side == config.wiredModem and type(message) == "table" and tonumber(message[1]) and tonumber(message[2]) and tonumber(message[3]) and tonumber(message[4]) then                
  
                 message.position = vector.new(message[1], message[2], message[3])
                 message.distance = message[4]
