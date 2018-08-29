@@ -1,7 +1,7 @@
---7
---fixed an error that arose when the position was nil
+--9
+--since v8 didn't work i rolled back to 7
  
-local version = 7
+local version = 9
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
