@@ -124,6 +124,7 @@ elseif sCommand == "host" then
             local sSide, sChannel, sReplyChannel, sMessage, nDistance = p1, p2, p3, p4, p5
             if sSide == sModemSide and nDistance then
                 -- We received a ping message on the GPS channel, send a response
+		sleep(1)
                 modem.transmit( sendingChannel, 6969, {x, y, z, nDistance } )          
                 -- Print the number of requests handled
                 nServed = nServed + 1
