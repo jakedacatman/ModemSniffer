@@ -1,7 +1,6 @@
---3
---f to pay respects to wired modems
- 
-local version = 3
+--4
+--fixed?
+local version = 4
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/host.lua")
  
