@@ -56,7 +56,7 @@ function locate(timeout, debug)
         local fixes = {}
         local timer = os.startTimer(timeout)
         repeat
-            local args = os.pullEvent("timer")
+            local args = {os.pullEvent("timer")}
             if args[2] == timer then return nil end     
             local _, side, chan, reply_chan, message = os.pullEvent "modem_message"
             if chan == 6969 and type(message) == "table" and tonumber(message[1]) and tonumber(message[2]) and tonumber(message[3]) and tonumber(message[4]) then                
