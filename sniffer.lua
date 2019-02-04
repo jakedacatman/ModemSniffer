@@ -1,7 +1,7 @@
---9
---since v8 didn't work i rolled back to 7
+--10
+--fixed blacklist channel skipping
  
-local version = 9
+local version = 10
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
@@ -91,8 +91,8 @@ for k = 1, #modems do
         if i+iter > 65535 then break end
         if not isBlacklisted(i+iter) then
                 v.open(i+iter)
-                channel = channel + 1
         end
+                channel = channel + 1
         end
         iter = iter+128
         sleep()
