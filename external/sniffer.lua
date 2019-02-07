@@ -1,7 +1,7 @@
---1
---first version!
+--2
+--fixed blacklist
  
-local version = 1
+local version = 2
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/external/sniffer.lua")
  
@@ -73,7 +73,7 @@ local function writeInfo(color, sender, receiver, distance)
 	term.setTextColor(color)
 end
 
-local function isBlacklisted(channel)
+local function isBlacklisted(channel, blacklist)
     for i = 1, #blacklist do
         if channel == blacklist[i] then return true end
     end
@@ -88,7 +88,7 @@ while true do
 	local allowedOrigin = config.origin or msg.origin
 	local blacklist = config.blacklist or {}
 	
-	if not isBlacklisted(msg.senderChannel) and msg.origin == allowedOrigin then
+	if not isBlacklisted(msg.senderChannel, blacklist) and msg.origin == allowedOrigin then
 		writeTime(colors.white)
 		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, msg.distance)
 		print(textutils.serialize(message))
