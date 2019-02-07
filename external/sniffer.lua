@@ -1,7 +1,7 @@
---3
---fixed distance
+--4
+--fixed spacing
  
-local version = 3
+local version = 4
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/external/sniffer.lua")
  
@@ -69,7 +69,7 @@ end
 
 local function writeInfo(color, sender, receiver, distance)
     term.setTextColor(colors.yellow)
-	print("sender: "..sender.."reply: "..receiver.."distance: "..distance)
+	print("sender: "..sender.." reply: "..receiver.." distance: "..distance)
 	term.setTextColor(color)
 end
 
