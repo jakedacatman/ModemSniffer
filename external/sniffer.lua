@@ -1,7 +1,7 @@
---4
---fixed spacing
+--5
+--dimensions
  
-local version = 4
+local version = 5
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/external/sniffer.lua")
  
@@ -67,9 +67,9 @@ local function writeTime(color)
     term.setTextColor(color)
 end
 
-local function writeInfo(color, sender, receiver, distance)
+local function writeInfo(color, sender, receiver, distance, dimension)
     term.setTextColor(colors.yellow)
-	print("sender: "..sender.." reply: "..receiver.." distance: "..distance)
+	print("sender: "..sender.." reply: "..receiver.." distance: "..distance.." dimension: "..dimension)
 	term.setTextColor(color)
 end
 
@@ -87,10 +87,11 @@ while true do
 	local allowedOrigin = config.origin or msg.origin
 	local blacklist = config.blacklist or {}
 	distance = msg.distance or "unknown"
+	local dimension = msg.dimension or "unknown"
 	
 	if not isBlacklisted(msg.senderChannel, blacklist) and msg.origin == allowedOrigin then
 		writeTime(colors.white)
-		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, distance)
+		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, distance, dimension)
 		print(textutils.serialize(message))
 	end
 	
