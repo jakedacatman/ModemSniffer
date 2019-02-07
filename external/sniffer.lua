@@ -90,7 +90,7 @@ while true do
 	
 	if not isBlacklisted(msg.senderChannel, blacklist) and msg.origin == allowedOrigin then
 		writeTime(colors.white)
-		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, msg.distance)
+		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, msg.distance or unknown)
 		print(textutils.serialize(message))
 	end
 	
