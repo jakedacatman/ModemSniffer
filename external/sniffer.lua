@@ -1,7 +1,7 @@
---2
---fixed blacklist
+--3
+--fixed distance
  
-local version = 2
+local version = 3
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/external/sniffer.lua")
  
@@ -82,15 +82,15 @@ end
 
 while true do
 	local event, side, senderChannel, replyChannel, msg, distance = os.pullEvent("modem_message")
-	if not distance then distance = "unknown" end
 	
 	local message = msg.message
 	local allowedOrigin = config.origin or msg.origin
 	local blacklist = config.blacklist or {}
+	distance = msg.distance
 	
 	if not isBlacklisted(msg.senderChannel, blacklist) and msg.origin == allowedOrigin then
 		writeTime(colors.white)
-		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, msg.distance or unknown)
+		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, distance)
 		print(textutils.serialize(message))
 	end
 	
