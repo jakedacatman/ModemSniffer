@@ -88,7 +88,7 @@ while true do
 	local allowedOrigin = config.origin or msg.origin
 	local blacklist = config.blacklist or {}
 	
-	if not isBlacklisted(msg.senderChannel) and msg.origin == allowedOrigin
+	if not isBlacklisted(msg.senderChannel) and msg.origin == allowedOrigin then
 		writeTime(colors.white)
 		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, msg.distance)
 		print(textutils.serialize(message))
