@@ -86,7 +86,7 @@ while true do
 	local message = msg.message
 	local allowedOrigin = config.origin or msg.origin
 	local blacklist = config.blacklist or {}
-	distance = msg.distance
+	distance = msg.distance or "unknown"
 	
 	if not isBlacklisted(msg.senderChannel, blacklist) and msg.origin == allowedOrigin then
 		writeTime(colors.white)
