@@ -1,7 +1,7 @@
---10
---fixed blacklist channel skipping
+--11
+--locate everything!
  
-local version = 10
+local version = 11
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/sniffer.lua")
  
@@ -111,7 +111,7 @@ while true do
     local event, side, senderChannel, replyChannel, msg, distance = os.pullEvent("modem_message")
     if not distance then distance = "unknown" end
     if side ~= config.wiredModem then
-        if config.getDistance and senderChannel == 65533 or senderChannel == 65535 then
+        if config.getDistance then
             if not isBlacklisted(replyChannel) then
                 writeTime(colors.white)
                 local pos = locate.locate(2, false)
