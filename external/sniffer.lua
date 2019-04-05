@@ -1,7 +1,7 @@
---5
---dimensions
+--6
+--truncate in config
  
-local version = 5
+local version = 6
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/external/sniffer.lua")
  
@@ -92,7 +92,11 @@ while true do
 	if not isBlacklisted(msg.senderChannel, blacklist) and msg.origin == allowedOrigin then
 		writeTime(colors.white)
 		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, distance, dimension)
-		print(textutils.serialize(message))
+		local s = textutils.serialize(message)
+		if config.truncate and type(config.truncate) == "number" then
+			s = s:sub(1, config.truncate)
+		end
+		print(s)
 	end
 	
 end
