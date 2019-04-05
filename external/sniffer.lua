@@ -95,7 +95,7 @@ while true do
 		local s = textutils.serialize(message)
 		if config.truncate and type(config.truncate) == "number" then
 			if s:len() > config.truncate then
-				s = s:sub(1, config.truncate).."..."
+				s = s:sub(1, config.truncate).."...\n}"
 			end
 		end
 		print(s)
