@@ -1,7 +1,7 @@
---6
+--7
 --truncate in config
  
-local version = 6
+local version = 7
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/external/sniffer.lua")
  
@@ -94,7 +94,9 @@ while true do
 		writeInfo(colors.green, msg.senderChannel, msg.replyChannel, distance, dimension)
 		local s = textutils.serialize(message)
 		if config.truncate and type(config.truncate) == "number" then
-			s = s:sub(1, config.truncate).."..."
+			if s:len() > config.truncate then
+				s = s:sub(1, config.truncate).."..."
+			end
 		end
 		print(s)
 	end
