@@ -12,9 +12,6 @@ local vector     = _G.vector
 
 local STARTUP_FILE = 'usr/autorun/reverseGPS.lua'
 
-local modems = {peripheral.find("modem", function(name, obj) return obj.isWireless() end)}
-if #modems ~= 4 then error "needs 4 modems to locate" end
-
 local function memoize(t, k, fn)
     local e = t[k]
 	   if not e then
@@ -109,7 +106,7 @@ local computers = { }
 		local e, side, channel, computerId, message, distance = os.pullEvent( "modem_message" )
 			if distance and modems[side] then
 				if channel == config.channel and message then
-					print(getPosition(computerId, modems[side], distance))
+					getPosition(computerId, modems[side], distance)
 				end
 			end
 	end
