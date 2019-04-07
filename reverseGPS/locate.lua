@@ -64,14 +64,14 @@ local isWanted(channel)
   return false
 end
 
-function locate(timeout, debug)
+function locate(event, timeout)
     while true do
         local fixes = {}
         local timer = os.startTimer(timeout)
         repeat
             local args = {os.pullEvent("timer")}
             if args[2] == timer then return nil end     
-            local _, side, chan, reply_chan, message = os.pullEvent "modem_message"
+            local _, side, chan, reply_chan, message = event
             if isWanted(chan) and type(message) ~= "nil" and tonumber(message[1]) and tonumber(message[2]) and tonumber(message[3]) and tonumber(message[4]) then                
                 if debug then print("got a position ("..textutils.serialize(message)..")") end
                 message.position = vector.new(message[1], message[2], message[3])
