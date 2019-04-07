@@ -21,6 +21,8 @@ local function memoize(t, k, fn)
 	   return e
 end
 
+local positions = { }
+
 local function configure()
 	local function getOption(prompt)
 		while true do
