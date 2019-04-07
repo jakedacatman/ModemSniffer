@@ -6,11 +6,11 @@ local l = require("/"..shell.resolve "locate")
 local file = fs.open("/"..shell.resolve "sniffConfig.lua", "r")
 local config = textutils.unserialize(file.readAll())
 file.close()
-if not config or config.channels then error "delete sniffConfig.lua" end
+if not config or not config.channels then error "delete sniffConfig.lua" end
 if #config.channels > 128 then error "modems can only have 128 channels open" end
 
 local modems = peripheral.find("modem", function(name, obj) return obj.isWireless() end)
-if #modems < 4 or #modems > 4 then error "needs 4 modems to locate" end
+if #modems ~= 4 then error "needs 4 modems to locate" end
     
 for i = 1, #modems do
   for v = 1, #config.channels do
