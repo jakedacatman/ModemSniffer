@@ -9,7 +9,7 @@ file.close()
 if not config or not config.channels then error "delete sniffConfig.lua" end
 if #config.channels > 128 then error "modems can only have 128 channels open" end
 
-local modems = peripheral.find("modem", function(name, obj) return obj.isWireless() end)
+local modems = {peripheral.find("modem", function(name, obj) return obj.isWireless() end)}
 if #modems ~= 4 then error "needs 4 modems to locate" end
     
 for i = 1, #modems do
