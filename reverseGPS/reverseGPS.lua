@@ -1,26 +1,115 @@
-if not fs.exists("/"..shell.resolve "locate.lua") then shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/reverseGPS/locate.lua /"..shell.resolve "locate.lua") end
-if not fs.exists("/"..shell.resolve "sniffConfig.lua") then shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/reverseGPS/sniffConfig.lua /"..shell.resolve "sniffConfig.lua") end 
+local Config = require('config')
+local GPS    = require('gps')
+local Util   = require('util')
+local fs         = _G.fs
+local gps 			    = _G.gps
+local os         = _G.os
+local peripheral = _G.peripheral
+local read       = _G.read
+local term       = _G.term
+local turtle     = _G.turtle
+local vector     = _G.vector
 
-local l = require("/"..shell.resolve "locate")
- 
-local file = fs.open("/"..shell.resolve "sniffConfig.lua", "r")
-local config = textutils.unserialize(file.readAll())
-file.close()
-if not config or not config.channels then error "delete sniffConfig.lua" end
-if #config.channels > 128 then error "modems can only have 128 channels open" end
+local STARTUP_FILE = 'usr/autorun/reverseGPS.lua'
 
 local modems = {peripheral.find("modem", function(name, obj) return obj.isWireless() end)}
 if #modems ~= 4 then error "needs 4 modems to locate" end
-    
-for i = 1, #modems do
-  for v = 1, #config.channels do
-    modems[i].open(v)        
-  end
+
+local function memoize(t, k, fn)
+    local e = t[k]
+	   if not e then
+		        e = fn()
+		        t[k] = e
+	   end
+	   return e
 end
-    
-while true do
-  local ev = os.pullEvent "modem_message"
-  local pos = {l.locate(ev, 5)}
-  print(pos)
-  sleep(1)
+
+local function configure()
+	local function getOption(prompt)
+		while true do
+			term.write(prompt)
+			local value = read()
+			if tonumber(value) then
+				return tonumber(value)
+			end
+			print('Invalid value, try again.\n')
+		end
+	end
+
+	print('rGPS configuration\n\n')
+
+	Config.update('rGPS', {
+		x = getOption('Turtle x: '),
+		y = getOption('Turtle y: '),
+		z = getOption('Turtle z: '),
+		east = getOption('East modem: modem_'),
+		south = getOption('South modem: modem_'),
+		west = getOption('West modem: modem_'),
+		north = getOption('North modem: modem_'),
+  locate = getOption "Scan on channel "
+	})
+
+	print('Make sure all wired modems are activated')
+	print('Enter to continue')
+	read()
+
+	if not fs.exists(STARTUP_FILE) then
+		Util.writeFile(STARTUP_FILE,
+			[[shell.openForegroundTab('reverseGPA.lua rGPS')]])
+		print('Autorun program created: ' .. STARTUP_FILE)
+	end
 end
+
+local computers = { }
+
+	if not fs.exists('usr/config/rGPS') then
+		configure()
+	end
+
+	local config = Config.load('rGPS')
+
+	local modems = { }
+	modems['modem_' .. config.east]  = { x = config.x + 2, y = config.y + 2, z = config.z     }
+	modems['modem_' .. config.west]  = { x = config.x - 2, y = config.y + 2, z = config.z     }
+	modems['modem_' .. config.south] = { x = config.x,     y = config.y,     z = config.z + 2 }
+	modems['modem_' .. config.north] = { x = config.x,     y = config.y,     z = config.z - 2 }
+
+	for k, modem in pairs(modems) do
+		Util.merge(modem, peripheral.wrap(k) or { })
+		Util.print('%s: %d %d %d', k, modem.x, modem.y, modem.z)
+		if not modem.open then
+			error('Modem is not activated or connected: ' .. k)
+		end
+		modem.open(config.locate)
+		--modem.open(999)
+	end
+
+	print('\nStarting rGPS')
+
+	local function getPosition(computerId, modem, distance)
+		local computer = memoize(computers, computerId, function() return { } end)
+		table.insert(computer, {
+			position = vector.new(modem.x, modem.y, modem.z),
+			distance = distance,
+		})
+		if #computer == 4 then
+			local pt = GPS.trilaterate(computer)
+			if pt then
+				positions[computerId] = pt
+				term.clear()
+				for k,v in pairs(positions) do
+					Util.print('ID: %d: %s %s %s', k, v.x, v.y, v.z)
+				end
+			end
+			computers[computerId] = nil
+		end
+	end
+
+	while true do
+		local e, side, channel, computerId, message, distance = os.pullEvent( "modem_message" )
+			if distance and modems[side] then
+				if channel == config.channel and message then
+					print(getPosition(computerId, modems[side], distance))
+				end
+			end
+	end
