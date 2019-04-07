@@ -109,6 +109,9 @@ local function ok()
 		local e, side, channel, computerId, message, distance = os.pullEvent( "modem_message" )
 			if distance and modems[side] then
 				if channel == config.channel and message then
+					for _, modem in pairs(modems) do
+						modem.transmit(computerId, 58008, { modem.x, modem.y, modem.z })
+					end
 					getPosition(computerId, modems[side], distance)
 				end
 			end
