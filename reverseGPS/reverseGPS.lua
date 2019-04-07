@@ -1,7 +1,7 @@
 if not fs.exists("/"..shell.resolve "locate.lua") then shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/reverseGPS/locate.lua /"..shell.resolve "locate.lua") end
 if not fs.exists("/"..shell.resolve "sniffConfig.lua") then shell.run("wget https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/reverseGPS/sniffConfig.lua /"..shell.resolve "sniffConfig.lua") end 
 
-local l = require("/"..shell.resolve "locate.lua")
+local l = require("/"..shell.resolve "locate")
  
 local file = fs.open("/"..shell.resolve "sniffConfig.lua", "r")
 local config = textutils.unserialize(file.readAll())
