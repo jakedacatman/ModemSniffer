@@ -57,7 +57,8 @@ local function configure()
 	end
 end
 
-local computers = { }
+local function ok()
+	local computers = { }
 
 	if not fs.exists('usr/config/rGPS') then
 		configure()
@@ -110,3 +111,6 @@ local computers = { }
 				end
 			end
 	end
+end
+
+ok()
