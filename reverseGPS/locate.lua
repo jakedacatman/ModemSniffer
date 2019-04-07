@@ -57,7 +57,7 @@ local config = textutils.unserialize(file.readAll())
 file.close()
 if #config.channels > 128 then error "modems can only have 128 channels open" end
 
-local isWanted(channel)
+local function isWanted(channel)
   for i = 1, #config.channels do
     if channel == i then return true end
   end
