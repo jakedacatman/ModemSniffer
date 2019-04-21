@@ -1,7 +1,7 @@
---7
---truncate in config
+--8
+--delay in config
  
-local version = 7
+local version = 8
  
 local latest = http.get("https://raw.githubusercontent.com/jakedacatman/ModemSniffer/master/external/sniffer.lua")
  
@@ -100,5 +100,5 @@ while true do
 		end
 		print(s)
 	end
-	
+	sleep(config.delay)
 end
