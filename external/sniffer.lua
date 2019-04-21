@@ -100,5 +100,5 @@ while true do
 		end
 		print(s)
 	end
-	sleep(config.delay)
+	sleep(tonumber(config.delay) ~= nil and config.delay or .5)
 end
